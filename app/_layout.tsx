@@ -1,20 +1,14 @@
+import { Slot } from "expo-router";
+import Toast from "react-native-toast-message";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
 
-export default function App() {
+export default function HomeLayout() {
   return (
-    <View style={styles.container}>
-      <Text>_layout</Text>
+    <>
       <StatusBar style="auto" />
-    </View>
+
+      <Slot />
+      <Toast />
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
