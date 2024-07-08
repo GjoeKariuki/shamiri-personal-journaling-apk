@@ -18,10 +18,12 @@ import {
   listenOrientationChange as lor,
   removeOrientationListener as rol,
 } from "react-native-responsive-screen";
+import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { sampleJournal } from "../store/store";
 
 function Homepage() {
+  const navigation = useNavigation();
   const [dairy, setDiary] = useState([{}]);
   const [columns, setColumns] = useState(2);
   const fetchDiaries = async () => {
@@ -58,7 +60,7 @@ function Homepage() {
         <TouchableOpacity
           style={styles.addbutton}
           onPress={() => {
-            router.navigate("components/AddJournalpage");
+            navigation.navigate("Modal");
           }}
         >
           <Icon name="plus" size={30} color="blue" />

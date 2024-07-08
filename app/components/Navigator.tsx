@@ -9,6 +9,7 @@ import Loginpage from "./Loginpage";
 import Profilepage from "./Profilepage";
 import Registrationpage from "./Registrationpage";
 import Headertab from "./Headertab";
+import Detailsmodal from "./Detailsmodal";
 
 const StackNav = createNativeStackNavigator();
 
@@ -46,6 +47,11 @@ function Navigator() {
           name="Profile"
           options={{ headerShown: false }}
           component={Profilepage}
+        />
+        <StackNav.Screen
+          name="Modal"
+          options={{ headerShown: false }}
+          component={Detailsmodal}
         />
       </StackNav.Navigator>
     </NavigationContainer>
