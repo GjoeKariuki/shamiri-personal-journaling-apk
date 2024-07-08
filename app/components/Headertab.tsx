@@ -21,8 +21,8 @@ import HeaderLogo from "../../assets/headerlogo.png";
 function Headertab() {
   const navigation = useNavigation();
   return (
-    <SafeAreaView style={styles.headers}>
-      <View className="flex flex-row">
+    <SafeAreaView className="bg-orange-20" style={styles.headers}>
+      <View className="flex flex-row justify-between px-5">
         <Image
           source={HeaderLogo}
           resizeMode="contain"
@@ -31,7 +31,7 @@ function Headertab() {
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
-            navigation.navigate("components/Profilepage");
+            navigation.navigate("Profile");
           }}
         >
           <Icon name="user-edit" size={30} color="blue" />
@@ -45,22 +45,24 @@ export default Headertab;
 
 const styles = StyleSheet.create({
   imagelogo: {
-    height: hp("10%"),
-    width: wp("10%"),
+    height: hp("15%"),
+    width: wp("15%"),
     aspectRatio: 1,
   },
   button: {
     // paddingTop: 10,
     // marginTop: hp("1%"),
+    position: "absolute",
+    bottom: "30%",
+    right: "2.5%",
   },
   headers: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: wp("2%"),
-    height: hp("6%"),
-    paddingTop: 10,
-    // width: wp("10%"),
+    // display: "flex",
+    // justifyContent: "space-between",
+    // paddingHorizontal: wp("2%"),
+    height: hp("10%"),
+    // paddingTop: 10,
+    // width: wp("100%"),
     // paddingVertical: hp("1.5%"),
   },
 });
