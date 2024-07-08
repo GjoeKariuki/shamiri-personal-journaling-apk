@@ -1,73 +1,8 @@
-// import React from "react";
-// import { View, Text, TextInput, Button } from "react-native";
-// import { useForm, Controller } from "react-hook-form";
-// import { yupResolver } from "@hookform/resolvers/yup";
-// import * as yup from "yup";
-// import axios from "axios";
-
-// const registrationSchema = yup.object().shape({
-//   email: yup.string().required(),
-//   password: yup.string().required().min(6),
-// });
-
-// function Registrationpage(navigation) {
-//   const {
-//     control,
-//     handleSubmit,
-//     formState: { errors },
-//   } = useForm({ resolver: yupResolver(registrationSchema) });
-
-//   const onSubmit = async (data) => {
-//     try {
-//       // await axios.post("")
-//       // registration endpoint waiting......
-//       // if success navigate
-//       console.log(data);
-//       navigation.navigate("Login");
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   };
-//   return (
-//     <View>
-//       <Text>Signup</Text>
-//       <Controller
-//         control={control}
-//         name="email"
-//         render={({ field: { onChange, value } }) => (
-//           <TextInput
-//             placeholder="Email address"
-//             onChangeText={onChange}
-//             value={value}
-//           />
-//         )}
-//       />
-//       {errors.email && <Text>{errors.email.message}</Text>}
-//       <Controller
-//         control={control}
-//         name="password"
-//         render={({ field: { onChange, value } }) => (
-//           <TextInput
-//             placeholder="Password"
-//             secureTextEntry
-//             onChangeText={onChange}
-//             value={value}
-//           />
-//         )}
-//       />
-//       {errors.password && <Text>{errors.password.message}</Text>}
-//       <Button title="Signup" onPress={handleSubmit(onSubmit)} />
-//     </View>
-//   );
-// }
-
-// export default Registrationpage;
-
 import React from "react";
 import { Text, TouchableOpacity, View, Image, TextInput } from "react-native";
-// import { themeColors } from "../theme";
+
 import { SafeAreaView } from "react-native-safe-area-context";
-// import { ArrowLeftIcon } from "react-native-heroicons/solid";
+import { ArrowLeftIcon } from "react-native-heroicons/solid";
 import { useNavigation } from "@react-navigation/native";
 
 export default function SignUpScreen() {
@@ -79,9 +14,9 @@ export default function SignUpScreen() {
         <View className="flex-row justify-start">
           <TouchableOpacity
             onPress={() => navigation.goBack()}
-            className="bg-yellow-400 p-2 rounded-tr-2xl rounded-bl-2xl ml-4"
+            className="bg-blue-400 p-2 rounded-tr-2xl rounded-bl-2xl ml-4"
           >
-            {/* <ArrowLeftIcon size={20} color="black" /> */}
+            <ArrowLeftIcon size={20} color="black" />
           </TouchableOpacity>
         </View>
         <View className="flex-row justify-center">
@@ -122,9 +57,7 @@ export default function SignUpScreen() {
             value="johnstack@gmail.com"
             className="mb-3 p-4 bg-gray-100 text-gray-700 rounded-2xl"
           />
-          {/* <TouchableOpacity className="flex items-end mb-5">
-                        <Text className="text-gray-700">Forgot Password?</Text>
-                    </TouchableOpacity> */}
+
           <TouchableOpacity className="py-3 bg-blue-800 rounded-xl">
             <Text className="font-extrabold text-center text-xl text-white">
               Sign Up

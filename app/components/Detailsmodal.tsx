@@ -19,21 +19,135 @@ import {
   listenOrientationChange as lor,
   removeOrientationListener as rol,
 } from "react-native-responsive-screen";
-import Icon from "react-native-vector-icons/FontAwesome";
+import Icon from "react-native-vector-icons/AntDesign";
 import { sampleJournal } from "../store/store";
 import { SafeAreaView } from "react-native-safe-area-context";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { format } from "date-fns";
+import { Picker } from "@react-native-picker/picker";
 
-function Detailsmodal() {
+function Detailsmodal({ isVisible, onClose, journalEntry }) {
+  const [formData, setFormData] = useState({
+    id: "",
+    title: "",
+    content: "",
+    category: "",
+    date: new Date(), // Initialize with current date
+    user: "",
+  });
+  // const [formData, setFormData] = useState(journalEntry);
+  const [datePicker, setDatePicker] = useState(false);
+  const [modalVisible, setModalVisible] = useState(isVisible);
+  const [customCategory, setCustomCategory] = useState(false);
+
+  const handleInputChange = (name: string, value: any) => {
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const changeDate = (event: any, selectdate: any) => {
+    const date = selectdate || formData.date;
+    setDatePicker(false);
+    setFormData({ ...formData, date: date });
+  };
+  const handleCategoryChange = (itemValue) => {
+    if (itemValue === "Custom") {
+      setCustomCategory(true);
+      setFormData({ ...formData, category: "" });
+    } else {
+      setCustomCategory(false);
+      setFormData({ ...formData, category: itemValue });
+    }
+  };
   return (
     <SafeAreaView>
       <Modal
         animationType="slide"
         transparent={true}
-        visible={true}
-        // onRequestClose={close logic} // Close modal on back button press
+        visible={modalVisible}
+        onRequestClose={onClose}
       >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}></View>
+        <View
+          style={styles.modalContainer}
+          className="flex-1 justify-center items-center"
+        >
+          <View style={styles.modalContent} className="bg-white p-5">
+            <Text className="text-xl font-bold mb-4">Journal Entry</Text>
+            <TextInput
+              className="border border-gray-300 rounded p-2 mb-2 w-full"
+              placeholder="Title"
+              value={formData.title}
+              onChangeText={(text) => handleInputChange("title", text)}
+            />
+            <TextInput
+              className="border border-gray-300 rounded p-2 mb-2 w-full"
+              placeholder="Content"
+              value={formData.content}
+              onChangeText={(text) => handleInputChange("content", text)}
+              multiline
+              numberOfLines={6}
+            />
+
+            {!customCategory ? (
+              <View className="border border-gray-300 rounded p-2 mb-2 w-full">
+                <Picker
+                  selectedValue={formData.category}
+                  onValueChange={handleCategoryChange}
+                >
+                  <Picker.Item label="Personal" value="Personal" />
+                  <Picker.Item label="Work" value="Work" />
+                  <Picker.Item label="Travel" value="Travel" />
+                  <Picker.Item label="Custom" value="Custom" />
+                </Picker>
+              </View>
+            ) : (
+              <View className="border border-gray-300 rounded p-2 mb-2 w-full flex">
+                <TextInput
+                  className="border border-gray-300 rounded p-2 mb-2 w-full"
+                  placeholder="Enter custom category"
+                  value={formData.category}
+                  onChangeText={(text) => handleInputChange("category", text)}
+                />
+                <TouchableOpacity
+                  className="p-2 rounded mt-2"
+                  onPress={() => setCustomCategory(false)}
+                >
+                  <Icon name="upcircleo" size={20} color="blue" />
+                </TouchableOpacity>
+              </View>
+            )}
+            <TouchableOpacity
+              className="border border-gray-300 rounded p-2 mb-2 w-full"
+              onPress={() => setDatePicker(true)}
+            >
+              <Text>{format(formData.date, "yyyy-MM-dd")}</Text>
+            </TouchableOpacity>
+            {datePicker && (
+              <DateTimePicker
+                value={formData.date}
+                mode="date"
+                display="default"
+                onChange={changeDate}
+              />
+            )}
+            <View className="flex-row justify-between">
+              <TouchableOpacity
+                className="bg-blue-500 p-3 rounded-lg"
+                onPress={onClose}
+              >
+                <Text className="text-white text-center">Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="bg-green-500 p-3 rounded-lg"
+                onPress={() => {
+                  // Save logic here
+                  // onClose();
+                  console.log(formData);
+                }}
+              >
+                <Text className="text-white text-center">Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
       </Modal>
     </SafeAreaView>
@@ -53,11 +167,13 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: "white",
-    padding: 20,
-    borderRadius: 10,
+    // padding: 20,
+    borderRadius: 50,
+    borderWidth: 2,
+    borderColor: "#4d4dff",
     alignItems: "center",
     justifyContent: "center",
-    width: wp("30%"),
-    height: hp("50%"),
+    width: wp("85%"),
+    height: hp("40%"),
   },
 });
