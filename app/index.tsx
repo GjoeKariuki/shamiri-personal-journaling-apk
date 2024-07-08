@@ -1,11 +1,16 @@
 import { StyleSheet, Text, View, ImageBackground } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Homepage from "./components/Homepage";
+
+import Navigator from "./components/Navigator";
 
 const App = () => {
   return (
-    <View>
-      <Homepage />
-    </View>
+    <SafeAreaView>
+      <View>
+        <Homepage />
+      </View>
+    </SafeAreaView>
   );
 };
 

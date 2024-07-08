@@ -14,7 +14,7 @@ const StackNav = createNativeStackNavigator();
 function Navigator() {
   return (
     <NavigationContainer>
-      <StackNav.Navigator initialRouteName="Login">
+      <StackNav.Navigator initialRouteName="Home">
         <StackNav.Screen name="Register" component={Registrationpage} />
         <StackNav.Screen name="Login" component={Loginpage} />
         <StackNav.Screen name="Home" component={Homepage} />
