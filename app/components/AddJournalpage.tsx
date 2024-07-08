@@ -1,7 +1,20 @@
 import React from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 
 function AddJournalpage() {
-  return <div>AddJournalpage</div>;
+  return (
+    <View>
+      <Text>Addjournal</Text>
+    </View>
+  );
 }
 
 export default AddJournalpage;

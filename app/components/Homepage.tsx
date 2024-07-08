@@ -40,13 +40,14 @@ function Homepage() {
 
   return (
     <View style={styles.container}>
-      <View>
+      <View style={styles.innercontainer}>
         <Text style={styles.heading}>Your Journals</Text>
-        {/* <Button
-          title="Add Journal"
-          onPress={() => router.navigate("AddJournalpage")}
-        /> */}
-        <TouchableOpacity>
+        <TouchableOpacity
+          style={styles.addbutton}
+          onPress={() => {
+            router.navigate("components/AddJournalpage");
+          }}
+        >
           <Icon name="plus" size={30} color="blue" />
         </TouchableOpacity>
       </View>
@@ -55,25 +56,31 @@ function Homepage() {
         data={sampleJournal}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View>
-            <Text>{item.title}</Text>
-            <Text>{item.content}</Text>
-            <Text>{item.category}</Text>
-            {/* <Button
-              title="Edit"
-              onPress={() =>
-                router.navigate(
-                  `EditJournalpage?entry=${encodeURIComponent(
-                    JSON.stringify(item)
-                  )} }`
-                )
-              }
-            /> */}
+          <View style={styles.journalist}>
             <View>
-              <TouchableOpacity>
+              <Text>{item.title}</Text>
+              <Text>{item.content}</Text>
+              <Text>{item.category}</Text>
+            </View>
+            <View style={styles.controls}>
+              <TouchableOpacity
+                style={styles.iconbutton}
+                onPress={() => {
+                  router.navigate(
+                    `components/EditJournalpage?entry=${encodeURIComponent(
+                      JSON.stringify(item)
+                    )} }`
+                  );
+                }}
+              >
                 <Icon name="edit" size={30} color="green" />
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity
+                style={styles.iconbutton}
+                onPress={() => {
+                  /* delete logic */
+                }}
+              >
                 <Icon name="trash" size={30} color="red" />
               </TouchableOpacity>
             </View>
@@ -95,6 +102,33 @@ const styles = StyleSheet.create({
     fontSize: hp("2%"),
     fontWeight: "bold",
     lineHeight: hp("3%"),
+  },
+  innercontainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: wp("2%"),
+    paddingVertical: hp("1.5%"),
+  },
+  addbutton: {
+    marginTop: 20,
+    padding: 10,
+  },
+  journalist: {
+    display: "flex",
+    paddingHorizontal: wp("2%"),
+    // flexDirection: "column",
+    // justifyContent: "center",
+  },
+  controls: {
+    display: "flex",
+    flexDirection: "row",
+    // justifyContent: "center",
+    paddingHorizontal: wp("2%"),
+    paddingVertical: hp("1%"),
+  },
+  iconbutton: {
+    padding: 10,
   },
 });
 
