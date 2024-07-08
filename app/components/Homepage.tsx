@@ -7,6 +7,7 @@ import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -22,6 +23,7 @@ import { sampleJournal } from "../store/store";
 
 function Homepage() {
   const [dairy, setDiary] = useState([{}]);
+  const [columns, setColumns] = useState(2);
   const fetchDiaries = async () => {
     try {
       // get token from asyncstorage
@@ -34,8 +36,19 @@ function Homepage() {
     }
   };
 
+  const updateFlatlist = () => {
+    const width = Dimensions.get("window").width;
+    if (width < 390) {
+      setColumns(1);
+    } else {
+      setColumns(2);
+    }
+  };
+
   useEffect(() => {
     fetchDiaries();
+    updateFlatlist();
+    Dimensions.addEventListener("change", updateFlatlist);
   }, []);
 
   return (
@@ -55,16 +68,28 @@ function Homepage() {
       <FlatList
         data={sampleJournal}
         keyExtractor={(item) => item.id.toString()}
+        numColumns={columns}
+        className="bg-blue-50 flex content-between p-10 mb-9"
         renderItem={({ item }) => (
-          <View style={styles.journalist}>
+          <View
+            style={styles.journalist}
+            className="bg-white m-2 p-4 rounded-lg shadow-emerald-950 flex-1 mb-8"
+          >
             <View>
-              <Text>{item.title}</Text>
-              <Text>{item.content}</Text>
-              <Text>{item.category}</Text>
+              <Text className="text-black text-2xl font-semibold mb-1">
+                {item.title}
+              </Text>
+              <Text className="text-black text-lg mb-1 ">{item.content}</Text>
+              <Text className=" text-sm text-slate-950">{item.category}</Text>
+              <Text className="k text-sm text-slate-950">{item.date}</Text>
             </View>
-            <View style={styles.controls}>
+            <View
+              style={styles.controls}
+              className="flex-row justify-between mt-3"
+            >
               <TouchableOpacity
                 style={styles.iconbutton}
+                className="p-2 rounded-full bg-green-200"
                 onPress={() => {
                   router.navigate(
                     `components/EditJournalpage?entry=${encodeURIComponent(
@@ -73,15 +98,16 @@ function Homepage() {
                   );
                 }}
               >
-                <Icon name="edit" size={30} color="green" />
+                <Icon name="edit" size={30} color="#006600" />
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.iconbutton}
+                className="p-2 rounded-full bg-red-100"
                 onPress={() => {
                   /* delete logic */
                 }}
               >
-                <Icon name="trash" size={30} color="red" />
+                <Icon name="trash" size={30} color="#ff6666" />
               </TouchableOpacity>
             </View>
           </View>
@@ -108,7 +134,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: wp("2%"),
-    paddingVertical: hp("1.5%"),
   },
   addbutton: {
     marginTop: 20,
