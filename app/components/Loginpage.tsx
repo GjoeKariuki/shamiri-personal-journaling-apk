@@ -1,28 +1,77 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Text, TouchableOpacity, View, Image, TextInput } from "react-native";
-
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+  listenOrientationChange as lor,
+  removeOrientationListener as rol,
+} from "react-native-responsive-screen";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ArrowLeftIcon } from "react-native-heroicons/solid";
 import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
 
+interface formInputs {
+  email: string;
+  password: string;
+}
 export default function LoginScreen() {
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+
   const navigation = useNavigation();
+
+  const postLogin = async (formdata: formInputs) => {
+    try {
+      // apiUrl + "/api/login/"
+
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/login/",
+        formdata,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      console.log("responding", response.data);
+    } catch (error) {
+      console.error("error response", error);
+
+      // console.error("error: response data", error.response.data);
+      // console.error("error: response status", error.response.status);
+      // console.error("error: response headers", error.response.headers);
+    }
+  };
+  const handleLogin = () => {
+    console.log("not heere");
+    if (email == "" && password == "") {
+      setEmailError("Email is required");
+      setPasswordError("Password is required");
+      return;
+    } else if (email == "") {
+      setEmailError("Email is required");
+      return;
+    } else if (password == "") {
+      setPasswordError("Password is required");
+      return;
+    } else if (email.length > 0 && password.length > 0) {
+      const formdata: formInputs = {
+        email: email.trim(),
+        password: password.trim(),
+      };
+      console.log("foremd", formdata);
+      postLogin(formdata);
+    }
+  };
 
   return (
     <View className="flex-1 bg-white" style={{ backgroundColor: "#877dfa" }}>
       <SafeAreaView className="flex p-2 pt-6">
-        <View className="flex-row justify-start">
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            className="bg-blue-400 p-2 rounded-tr-2xl rounded-bl-2xl ml-4"
-          >
-            <ArrowLeftIcon size={20} color="black" />
-          </TouchableOpacity>
-        </View>
         <View className="flex-row justify-center">
           <Image
             source={require("../../assets/login.png")}
-            style={{ width: 300, height: 300 }}
+            style={{ width: wp("45%"), height: wp("45%") }}
           />
         </View>
       </SafeAreaView>
@@ -32,20 +81,35 @@ export default function LoginScreen() {
       >
         <View className="form space-y-2">
           <Text className="text-gray-700 ml-4">Email Address</Text>
+          {emailError ? (
+            <Text className="text-red-500 m-1 text-center">{emailError}</Text>
+          ) : null}
           <TextInput
             placeholder="Enter Email:"
-            value="johnstack@gmail.com"
+            value={email}
+            onChangeText={setEmail}
             className="p-4 bg-gray-100 text-gray-700 rounded-2xl mb-3"
           />
+
           <Text className="text-gray-700 ml-4">Password</Text>
+          {passwordError ? (
+            <Text className="text-red-500 m-1 text-center">
+              {passwordError}
+            </Text>
+          ) : null}
+
           <TextInput
             secureTextEntry
             placeholder="Enter Password:"
-            value="johnstack@gmail.com"
+            value={password}
+            onChangeText={setPassword}
             className="p-4 bg-gray-100 text-gray-700 rounded-2xl mb-5"
           />
 
-          <TouchableOpacity className="py-3 bg-blue-800 rounded-xl">
+          <TouchableOpacity
+            className="py-3 bg-blue-800 rounded-xl"
+            onPress={() => handleLogin()}
+          >
             <Text className="font-extrabold text-center text-xl text-white">
               Login
             </Text>
