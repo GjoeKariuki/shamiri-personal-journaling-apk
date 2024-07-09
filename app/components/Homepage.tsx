@@ -28,6 +28,7 @@ function Homepage() {
   const navigation = useNavigation();
   const [dairy, setDiary] = useState([{}]);
   const [columns, setColumns] = useState(2);
+  const [filter, setFilter] = useState("all");
   const fetchDiaries = async () => {
     try {
       // get token from asyncstorage
@@ -49,6 +50,10 @@ function Homepage() {
     }
   };
 
+  const filterDiaries = (period) => {
+    setFilter(period);
+  };
+
   useEffect(() => {
     fetchDiaries();
     updateFlatlist();
@@ -67,6 +72,20 @@ function Homepage() {
         >
           <Icon name="plus" size={30} color="blue" />
         </TouchableOpacity>
+      </View>
+
+      <View style={styles.filterContainer}>
+        <Text style={styles.filterLabel}>Filter by:</Text>
+        <Picker
+          selectedValue={filter}
+          style={styles.picker}
+          onValueChange={(itemValue, itemIndex) => filterDiaries(itemValue)}
+        >
+          <Picker.Item label="All" value="all" />
+          <Picker.Item label="Daily" value="daily" />
+          <Picker.Item label="Weekly" value="weekly" />
+          <Picker.Item label="Monthly" value="monthly" />
+        </Picker>
       </View>
 
       <FlatList
@@ -158,6 +177,22 @@ const styles = StyleSheet.create({
   },
   iconbutton: {
     padding: 10,
+  },
+  filterContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: wp("2%"),
+    marginVertical: 10,
+  },
+  filterLabel: {
+    fontSize: hp("2%"),
+    fontWeight: "bold",
+  },
+  picker: {
+    height: 50,
+    width: 150,
   },
 });
 
