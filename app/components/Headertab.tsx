@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -16,10 +16,33 @@ import {
   removeOrientationListener as rol,
 } from "react-native-responsive-screen";
 import Icon from "react-native-vector-icons/FontAwesome5";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import HeaderLogo from "../../assets/headerlogo.png";
 
 function Headertab() {
+  const [hasToken, setHasToken] = useState(false);
+
+  const searchToken = async () => {
+    try {
+      const token = await AsyncStorage.getItem("Token");
+      if (token !== null) {
+        setHasToken(true);
+      } else {
+        setHasToken(false);
+      }
+    } catch (error) {
+      console.error("no token found");
+    }
+  };
+
   const navigation = useNavigation();
+
+  useEffect(() => {
+    setInterval(() => {
+      searchToken();
+    }, 200);
+  }, []);
   return (
     <SafeAreaView className="bg-orange-20" style={styles.headers}>
       <View className="flex flex-row justify-between px-5">
@@ -28,14 +51,16 @@ function Headertab() {
           resizeMode="contain"
           style={styles.imagelogo}
         />
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            navigation.navigate("Profile");
-          }}
-        >
-          <Icon name="user-edit" size={30} color="blue" />
-        </TouchableOpacity>
+        {hasToken && (
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              navigation.navigate("Profile");
+            }}
+          >
+            <Icon name="user-edit" size={30} color="blue" />
+          </TouchableOpacity>
+        )}
       </View>
     </SafeAreaView>
   );

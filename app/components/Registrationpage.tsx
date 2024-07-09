@@ -31,12 +31,12 @@ export default function SignUpScreen() {
         style={{ borderTopLeftRadius: 50, borderTopRightRadius: 50 }}
       >
         <View className="form space-y-2">
-          <Text className="text-gray-700 ml-4">Full Name</Text>
+          {/* <Text className="text-gray-700 ml-4">Full Name</Text>
           <TextInput
             placeholder="Enter name:"
             value="John Stack"
             className="p-4 bg-gray-100 text-gray-700 rounded-2xl mb-3"
-          />
+          /> */}
           <Text className="text-gray-700 ml-4">Email Address</Text>
           <TextInput
             placeholder="Enter Email:"

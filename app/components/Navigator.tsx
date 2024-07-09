@@ -17,7 +17,7 @@ function Navigator() {
   return (
     <NavigationContainer>
       <Headertab />
-      <StackNav.Navigator initialRouteName="Login">
+      <StackNav.Navigator initialRouteName="Register">
         <StackNav.Screen
           name="Register"
           options={{ headerShown: false }}

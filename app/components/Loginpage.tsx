@@ -8,6 +8,7 @@ import {
 } from "react-native-responsive-screen";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
 interface formInputs {
@@ -25,16 +26,35 @@ export default function LoginScreen() {
 
   const postLogin = async (formdata: formInputs) => {
     try {
-      // apiUrl + "/api/login/"
-
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/login/",
+        "https://entris.cintelcoreams.com/api/login/",
         formdata,
         {
           headers: { "Content-Type": "application/json" },
         }
       );
-      console.log("responding", response.data);
+      if (response.data !== false) {
+        const user_id = response.data.user.id;
+        const user_token = response.data.token;
+        const user_first_name = response.data.user.first_name;
+        const user_last_name = response.data.user.last_name;
+        const user_email = response.data.user.email;
+
+        await AsyncStorage.setItem("Token", user_token);
+        await AsyncStorage.setItem("userID", user_id);
+        await AsyncStorage.setItem("userFirstName", user_first_name);
+        await AsyncStorage.setItem("userLastName", user_last_name);
+        await AsyncStorage.setItem("userEmail", user_email);
+        if (user_id) {
+          setEmail("");
+          setPassword("");
+          setEmailError("");
+          setPasswordError("");
+          navigation.navigate("Home");
+        }
+      } else {
+        console.log(false);
+      }
     } catch (error) {
       console.error("error response", error);
 
