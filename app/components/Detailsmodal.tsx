@@ -25,8 +25,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { format } from "date-fns";
 import { Picker } from "@react-native-picker/picker";
+import { useNavigation } from "@react-navigation/native";
 
 function Detailsmodal({ isVisible, onClose, journalEntry }) {
+  const navigation = useNavigation();
   const [formData, setFormData] = useState({
     id: "",
     title: "",
@@ -35,10 +37,15 @@ function Detailsmodal({ isVisible, onClose, journalEntry }) {
     date: new Date(), // Initialize with current date
     user: "",
   });
+  const [titleErrors, setTitleErrors] = useState("");
+  const [contentErrors, setContentErrors] = useState("");
+  const [categoryErrors, setCategoryErrors] = useState("");
+
   // const [formData, setFormData] = useState(journalEntry);
   const [datePicker, setDatePicker] = useState(false);
   const [modalVisible, setModalVisible] = useState(isVisible);
   const [customCategory, setCustomCategory] = useState(false);
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
   const handleInputChange = (name: string, value: any) => {
     setFormData({ ...formData, [name]: value });
@@ -58,6 +65,75 @@ function Detailsmodal({ isVisible, onClose, journalEntry }) {
       setFormData({ ...formData, category: itemValue });
     }
   };
+  const getuser = async () => {
+    const fetched = await AsyncStorage.getItem("userID");
+    const user: string = fetched!.toString();
+    setFormData({ ...formData, user: user });
+  };
+  useEffect(() => {
+    getuser();
+  }, []);
+
+  const validateFormInputs = () => {
+    if (
+      formData.title == "" &&
+      formData.category == "" &&
+      formData.content == ""
+    ) {
+      setTitleErrors("Title is required");
+      setCategoryErrors("Category is required");
+      setContentErrors("Content is required");
+      return;
+    } else if (formData.title == "") {
+      setTitleErrors("Title is required");
+      return;
+    } else if (formData.category == "") {
+      setCategoryErrors("Category is required");
+      return;
+    } else if (formData.content == "") {
+      setContentErrors("Content is required");
+      return;
+    } else if (
+      formData.title.length > 0 &&
+      formData.category.length > 0 &&
+      formData.content.length > 0
+    ) {
+      handleCreation();
+    }
+  };
+
+  const handleCreation = async () => {
+    try {
+      const token = await AsyncStorage.getItem("Token");
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+      };
+
+      // format time
+      const formdata = {
+        category: formData.category,
+        content: formData.content,
+        date: formData.date,
+        title: formData.title,
+        user: formData.user,
+      };
+      const response = await axios.post(
+        apiUrl + "/journals/journal_list/",
+        formdata,
+        config
+      );
+      if (response.data !== false) {
+        // display toast success
+        navigation.navigate("Home");
+      }
+    } catch (error) {
+      console.error(error);
+      // display failure toast
+    }
+  };
   return (
     <SafeAreaView>
       <Modal
@@ -72,12 +148,22 @@ function Detailsmodal({ isVisible, onClose, journalEntry }) {
         >
           <View style={styles.modalContent} className="bg-white p-5">
             <Text className="text-xl font-bold mb-4">Journal Entry</Text>
+            {titleErrors ? (
+              <Text className="text-red-500 m-1 text-center">
+                {titleErrors}
+              </Text>
+            ) : null}
             <TextInput
               className="border border-gray-300 rounded p-2 mb-2 w-full"
               placeholder="Title"
               value={formData.title}
               onChangeText={(text) => handleInputChange("title", text)}
             />
+            {contentErrors ? (
+              <Text className="text-red-500 m-1 text-center">
+                {contentErrors}
+              </Text>
+            ) : null}
             <TextInput
               className="border border-gray-300 rounded p-2 mb-2 w-full"
               placeholder="Content"
@@ -86,7 +172,11 @@ function Detailsmodal({ isVisible, onClose, journalEntry }) {
               multiline
               numberOfLines={6}
             />
-
+            {categoryErrors ? (
+              <Text className="text-red-500 m-1 text-center">
+                {categoryErrors}
+              </Text>
+            ) : null}
             {!customCategory ? (
               <View className="border border-gray-300 rounded p-2 mb-2 w-full">
                 <Picker
@@ -141,7 +231,8 @@ function Detailsmodal({ isVisible, onClose, journalEntry }) {
                 onPress={() => {
                   // Save logic here
                   // onClose();
-                  console.log(formData);
+
+                  validateFormInputs();
                 }}
               >
                 <Text className="text-white text-center">Save</Text>

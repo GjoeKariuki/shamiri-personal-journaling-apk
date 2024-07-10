@@ -26,16 +26,33 @@ import { sampleJournal } from "../store/store";
 
 function Homepage() {
   const navigation = useNavigation();
-  const [dairy, setDiary] = useState([{}]);
+  const [diary, setDiary] = useState([{}]);
   const [columns, setColumns] = useState(2);
   const [filter, setFilter] = useState("all");
+
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+
   const fetchDiaries = async () => {
     try {
       // get token from asyncstorage
+      const token = await AsyncStorage.getItem("Token");
+      // https://entris.cintelcoreams.com/journals/journal_list/
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+      };
+      const response = await axios.get(
+        apiUrl + "/journals/journal_list/",
+        config
+      );
+      console.log("Response data", response.data);
+
       // get id
       // get diaries of login user
       // setDiary to response.data
-      setDiary(sampleJournal);
+      setDiary(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -50,8 +67,10 @@ function Homepage() {
     }
   };
 
-  const filterDiaries = (period) => {
+  const filterDiaries = (period: string) => {
     setFilter(period);
+    // fetch diaries from endpoint
+    // setDiary(response.data)
   };
 
   useEffect(() => {
@@ -79,63 +98,66 @@ function Homepage() {
         <Picker
           selectedValue={filter}
           style={styles.picker}
-          onValueChange={(itemValue, itemIndex) => filterDiaries(itemValue)}
+          onValueChange={(itemValue) => filterDiaries(itemValue)}
         >
-          <Picker.Item label="All" value="all" />
-          <Picker.Item label="Daily" value="daily" />
-          <Picker.Item label="Weekly" value="weekly" />
-          <Picker.Item label="Monthly" value="monthly" />
+          <Picker.Item label="All" value={"all"} />
+          <Picker.Item label="Daily" value={"daily"} />
+          <Picker.Item label="Weekly" value={"weekly"} />
+          <Picker.Item label="Monthly" value={"monthly"} />
         </Picker>
       </View>
-
-      <FlatList
-        data={sampleJournal}
-        keyExtractor={(item) => item.id.toString()}
-        numColumns={columns}
-        className="bg-blue-50 flex content-between p-10 mb-9"
-        renderItem={({ item }) => (
-          <View
-            style={styles.journalist}
-            className="bg-white m-2 p-4 rounded-lg shadow-emerald-950 flex-1 mb-8"
-          >
-            <View>
-              <Text className="text-black text-2xl font-semibold mb-1">
-                {item.title}
-              </Text>
-              <Text className="text-black text-lg mb-1 ">{item.content}</Text>
-              <Text className=" text-sm text-slate-950">{item.category}</Text>
-              <Text className="k text-sm text-slate-950">{item.date}</Text>
-            </View>
+      {diary.length > 0 ? (
+        <FlatList
+          data={sampleJournal}
+          keyExtractor={(item) => item.id.toString()}
+          numColumns={columns}
+          className="bg-blue-50 flex content-between p-10 mb-9"
+          renderItem={({ item }) => (
             <View
-              style={styles.controls}
-              className="flex-row justify-between mt-3"
+              style={styles.journalist}
+              className="bg-white m-2 p-4 rounded-lg shadow-emerald-950 flex-1 mb-8"
             >
-              <TouchableOpacity
-                style={styles.iconbutton}
-                className="p-2 rounded-full bg-green-200"
-                onPress={() => {
-                  router.navigate(
-                    `components/EditJournalpage?entry=${encodeURIComponent(
-                      JSON.stringify(item)
-                    )} }`
-                  );
-                }}
+              <View>
+                <Text className="text-black text-2xl font-semibold mb-1">
+                  {item.title}
+                </Text>
+                <Text className="text-black text-lg mb-1 ">{item.content}</Text>
+                <Text className=" text-sm text-slate-950">{item.category}</Text>
+                <Text className="k text-sm text-slate-950">{item.date}</Text>
+              </View>
+              <View
+                style={styles.controls}
+                className="flex-row justify-between mt-3"
               >
-                <Icon name="edit" size={30} color="#006600" />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.iconbutton}
-                className="p-2 rounded-full bg-red-100"
-                onPress={() => {
-                  /* delete logic */
-                }}
-              >
-                <Icon name="trash" size={30} color="#ff6666" />
-              </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.iconbutton}
+                  className="p-2 rounded-full bg-green-200"
+                  onPress={() => {
+                    router.navigate(
+                      `components/EditJournalpage?entry=${encodeURIComponent(
+                        JSON.stringify(item)
+                      )} }`
+                    );
+                  }}
+                >
+                  <Icon name="edit" size={30} color="#006600" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.iconbutton}
+                  className="p-2 rounded-full bg-red-100"
+                  onPress={() => {
+                    /* delete logic */
+                  }}
+                >
+                  <Icon name="trash" size={30} color="#ff6666" />
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        )}
-      />
+          )}
+        />
+      ) : (
+        <Text className="text-red-700 text-3xl">No journal recorded yet!</Text>
+      )}
     </View>
   );
 }

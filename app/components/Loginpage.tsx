@@ -26,13 +26,11 @@ export default function LoginScreen() {
 
   const postLogin = async (formdata: formInputs) => {
     try {
-      const response = await axios.post(
-        "https://entris.cintelcoreams.com/api/login/",
-        formdata,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      // console.log(apiUrl);
+
+      const response = await axios.post(apiUrl + "/api/login/", formdata, {
+        headers: { "Content-Type": "application/json" },
+      });
       if (response.data !== false) {
         const user_id = response.data.user.id;
         const user_token = response.data.token;
@@ -57,8 +55,11 @@ export default function LoginScreen() {
       }
     } catch (error) {
       console.error("error response", error);
+      // show toast failed
+      const errormessage = error.response.data.error[0];
+      console.log(errormessage);
 
-      // console.error("error: response data", error.response.data);
+      console.error("error: response data", error.response.data);
       // console.error("error: response status", error.response.status);
       // console.error("error: response headers", error.response.headers);
     }
