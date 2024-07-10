@@ -113,10 +113,14 @@ function Detailsmodal({ isVisible, onClose, journalEntry }) {
       };
 
       // format time
+      const datedd = formData.date;
+      const det = datedd.toISOString().split("T");
+      // console.log(det[0]);
+
       const formdata = {
         category: formData.category,
         content: formData.content,
-        date: formData.date,
+        date: det[0],
         title: formData.title,
         user: formData.user,
       };
@@ -125,8 +129,12 @@ function Detailsmodal({ isVisible, onClose, journalEntry }) {
         formdata,
         config
       );
+      console.log(response.data);
+
       if (response.data !== false) {
         // display toast success
+        console.log("succeeded");
+
         navigation.navigate("Home");
       }
     } catch (error) {

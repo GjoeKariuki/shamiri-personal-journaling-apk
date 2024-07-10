@@ -47,7 +47,7 @@ function Homepage() {
         apiUrl + "/journals/journal_list/",
         config
       );
-      console.log("Response data", response.data);
+      console.log("diaries fetched", response.data);
 
       // get id
       // get diaries of login user
@@ -108,7 +108,7 @@ function Homepage() {
       </View>
       {diary.length > 0 ? (
         <FlatList
-          data={sampleJournal}
+          data={diary}
           keyExtractor={(item) => item.id.toString()}
           numColumns={columns}
           className="bg-blue-50 flex content-between p-10 mb-9"
@@ -156,7 +156,9 @@ function Homepage() {
           )}
         />
       ) : (
-        <Text className="text-red-700 text-3xl">No journal recorded yet!</Text>
+        <Text className="text-red-700 text-3xl text-center m-4">
+          No journal recorded yet!
+        </Text>
       )}
     </View>
   );
