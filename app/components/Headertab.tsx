@@ -57,11 +57,14 @@ function Headertab() {
   return (
     <SafeAreaView className="bg-orange-20" style={styles.headers}>
       <View className="flex flex-row justify-between px-5">
-        <Image
-          source={HeaderLogo}
-          resizeMode="contain"
-          style={styles.imagelogo}
-        />
+        <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+          <Image
+            source={HeaderLogo}
+            resizeMode="contain"
+            style={styles.imagelogo}
+          />
+        </TouchableOpacity>
+
         <View className="flex">
           {hasToken && (
             <TouchableOpacity
@@ -98,8 +101,8 @@ export default Headertab;
 
 const styles = StyleSheet.create({
   imagelogo: {
-    height: hp("15%"),
-    width: wp("15%"),
+    height: hp("9%"),
+    width: wp("9%"),
     aspectRatio: 1,
   },
   button: {
