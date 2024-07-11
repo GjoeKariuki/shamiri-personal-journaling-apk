@@ -133,7 +133,7 @@ function Homepage() {
                   style={styles.iconbutton}
                   className="p-2 rounded-full bg-green-200"
                   onPress={() => {
-                    router.navigate(
+                    navigate.navigate(
                       `components/EditJournalpage?entry=${encodeURIComponent(
                         JSON.stringify(item)
                       )} }`

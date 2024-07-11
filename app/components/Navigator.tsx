@@ -10,6 +10,7 @@ import Profilepage from "./Profilepage";
 import Registrationpage from "./Registrationpage";
 import Headertab from "./Headertab";
 import Detailsmodal from "./Detailsmodal";
+import Toast from "react-native-toast-message";
 
 const StackNav = createNativeStackNavigator();
 
@@ -17,7 +18,8 @@ function Navigator() {
   return (
     <NavigationContainer>
       <Headertab />
-      <StackNav.Navigator initialRouteName="Login">
+      <Toast />
+      <StackNav.Navigator initialRouteName="Home">
         <StackNav.Screen
           name="Register"
           options={{ headerShown: false }}

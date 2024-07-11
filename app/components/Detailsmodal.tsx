@@ -26,6 +26,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { format } from "date-fns";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
 
 function Detailsmodal({ isVisible, onClose, journalEntry }) {
   const navigation = useNavigation();
@@ -134,13 +135,39 @@ function Detailsmodal({ isVisible, onClose, journalEntry }) {
       if (response.data !== false) {
         // display toast success
         console.log("succeeded");
-
+        notificationToast("success", "Journal added successful", "");
         navigation.navigate("Home");
       }
     } catch (error) {
       console.error(error);
       // display failure toast
+      notificationToast("error", "Failed adding journal", "Try again");
     }
+  };
+
+  const notificationToast = (
+    type: string,
+    titletext: string,
+    titletext2: string
+  ) => {
+    Toast.show({
+      type: type, //"error",
+      position: "top",
+      text1: titletext, //"Failed",
+      text2: titletext2, //"Check credentials & Try again",
+      text1Style: {
+        fontSize: hp("2%"),
+        fontWeight: "bold",
+        lineHeight: hp("3%"),
+      },
+      text2Style: {
+        fontSize: hp("1.4%"),
+        fontWeight: "bold",
+        lineHeight: hp("3%"),
+      },
+      topOffset: hp("12%"),
+      visibilityTime: 4000,
+    });
   };
   return (
     <SafeAreaView>

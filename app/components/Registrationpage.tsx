@@ -5,6 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
+import Toast from "react-native-toast-message";
 
 interface formInputs {
   email: string;
@@ -70,11 +71,13 @@ export default function SignUpScreen() {
       });
       console.log(response.data);
       if (response.data !== false) {
+        notificationToast("success", "Sign up successfull", "");
         navigation.navigate("Login");
       }
     } catch (error) {
       console.error("error response", error);
       // show toast login failed
+      notificationToast("error", "Signup failed", "Try again");
     }
   };
 
@@ -105,6 +108,30 @@ export default function SignUpScreen() {
     return isValid;
   };
 
+  const notificationToast = (
+    type: string,
+    titletext: string,
+    titletext2: string
+  ) => {
+    Toast.show({
+      type: type, //"error",
+      position: "top",
+      text1: titletext, //"Failed",
+      text2: titletext2, //"Check credentials & Try again",
+      text1Style: {
+        fontSize: hp("2%"),
+        fontWeight: "bold",
+        lineHeight: hp("3%"),
+      },
+      text2Style: {
+        fontSize: hp("1.4%"),
+        fontWeight: "bold",
+        lineHeight: hp("3%"),
+      },
+      topOffset: hp("12%"),
+      visibilityTime: 4000,
+    });
+  };
   return (
     <View className="flex-1 bg-white" style={{ backgroundColor: "#877dfa" }}>
       <SafeAreaView className="flex p-2 pt-6">
