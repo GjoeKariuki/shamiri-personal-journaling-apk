@@ -18,16 +18,16 @@ const editschema = yup.object().shape({
 });
 
 function EditJournalpage() {
-  // const { entry } = useGlobalSearchParams();
-  // const parsedEntry: JournalEntry = JSON.parse(decodeURIComponent(entry));
-  const parsedEntry: JournalEntry = {
-    id: "1a",
-    title: "Sample Title",
-    content: "Sample Content",
-    category: "Sample Category",
-    date: "2024-07-04",
-    user: "23489h23h234rfh",
-  };
+  const { entry } = useGlobalSearchParams();
+  const parsedEntry: JournalEntry = JSON.parse(decodeURIComponent(entry));
+  // const parsedEntry: JournalEntry = {
+  //   id: "1a",
+  //   title: "Sample Title",
+  //   content: "Sample Content",
+  //   category: "Sample Category",
+  //   date: "2024-07-04",
+  //   user: "23489h23h234rfh",
+  // };
   const {
     control,
     handleSubmit,
@@ -36,10 +36,10 @@ function EditJournalpage() {
   } = useForm({
     resolver: yupResolver(editschema),
   });
-  // useEffect(() => {
-  //   // console.log("entry object", entry);
-  //   reset(parsedEntry);
-  // }, [parsedEntry, reset]);
+  useEffect(() => {
+    // console.log("entry object", entry);
+    reset(parsedEntry);
+  }, [parsedEntry, reset]);
 
   const onSubmit = async (data) => {
     try {

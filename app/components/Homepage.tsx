@@ -8,8 +8,10 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -29,6 +31,7 @@ function Homepage() {
   const [diary, setDiary] = useState([{}]);
   const [columns, setColumns] = useState(2);
   const [filter, setFilter] = useState("all");
+  const [isloading, setIsLoading] = useState(true);
 
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
@@ -36,6 +39,9 @@ function Homepage() {
     try {
       // get token from asyncstorage
       const token = await AsyncStorage.getItem("Token");
+      const userloginid = await AsyncStorage.getItem("userID");
+      // console.log("userloginidw", userloginid?.toString());
+
       // https://entris.cintelcoreams.com/journals/journal_list/
       const config = {
         headers: {
@@ -47,14 +53,21 @@ function Homepage() {
         apiUrl + "/journals/journal_list/",
         config
       );
-      console.log("diaries fetched", response.data);
+
+      const arrjournals = response.data;
+      const userDiaries = arrjournals.filter(
+        (entry) => entry.user.id === userloginid
+      );
+      // console.log("user diaries fetched", userDiaries);
 
       // get id
       // get diaries of login user
       // setDiary to response.data
-      setDiary(response.data);
+      setDiary(userDiaries);
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -76,8 +89,18 @@ function Homepage() {
   useEffect(() => {
     fetchDiaries();
     updateFlatlist();
-    Dimensions.addEventListener("change", updateFlatlist);
+    const responder = Dimensions.addEventListener("change", updateFlatlist);
+    return () => responder.remove();
   }, []);
+
+  if (isloading) {
+    return (
+      <SafeAreaView className="flex items-center justify-center content-center">
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text>Getting journals</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -86,7 +109,7 @@ function Homepage() {
         <TouchableOpacity
           style={styles.addbutton}
           onPress={() => {
-            navigation.navigate("Modal");
+            navigation.navigate("AddModal");
           }}
         >
           <Icon name="plus" size={30} color="blue" />
@@ -133,11 +156,7 @@ function Homepage() {
                   style={styles.iconbutton}
                   className="p-2 rounded-full bg-green-200"
                   onPress={() => {
-                    navigate.navigate(
-                      `components/EditJournalpage?entry=${encodeURIComponent(
-                        JSON.stringify(item)
-                      )} }`
-                    );
+                    navigation.navigate("EditModal", { item });
                   }}
                 >
                   <Icon name="edit" size={30} color="#006600" />

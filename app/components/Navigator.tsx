@@ -9,7 +9,8 @@ import Loginpage from "./Loginpage";
 import Profilepage from "./Profilepage";
 import Registrationpage from "./Registrationpage";
 import Headertab from "./Headertab";
-import Detailsmodal from "./Detailsmodal";
+import Addsmodal from "./Addsmodal";
+import Editmodal from "./Editmodal";
 import Toast from "react-native-toast-message";
 
 const StackNav = createNativeStackNavigator();
@@ -19,7 +20,7 @@ function Navigator() {
     <NavigationContainer>
       <Headertab />
       <Toast />
-      <StackNav.Navigator initialRouteName="Home">
+      <StackNav.Navigator initialRouteName="Login">
         <StackNav.Screen
           name="Register"
           options={{ headerShown: false }}
@@ -51,9 +52,14 @@ function Navigator() {
           component={Profilepage}
         />
         <StackNav.Screen
-          name="Modal"
+          name="AddModal"
           options={{ headerShown: false }}
-          component={Detailsmodal}
+          component={Addsmodal}
+        />
+        <StackNav.Screen
+          name="EditModal"
+          options={{ headerShown: false }}
+          component={Editmodal}
         />
       </StackNav.Navigator>
     </NavigationContainer>

@@ -25,26 +25,30 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { format } from "date-fns";
 import { Picker } from "@react-native-picker/picker";
-import { useNavigation } from "@react-navigation/native";
-import Toast from "react-native-toast-message";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import Toastnotify from "./Toastnotify";
 
-function Detailsmodal({ isVisible, onClose, journalEntry }) {
+function Editmodal() {
+  const route = useRoute();
+  const { item } = route.params;
   const navigation = useNavigation();
   const [formData, setFormData] = useState({
-    id: "",
-    title: "",
-    content: "",
-    category: "",
-    date: new Date(), // Initialize with current date
-    user: "",
+    id: item.id,
+    title: item.title,
+    content: item.content,
+    category: item.category,
+    date: item.date, // Initialize with current date
+    user: item.user,
   });
   const [titleErrors, setTitleErrors] = useState("");
   const [contentErrors, setContentErrors] = useState("");
   const [categoryErrors, setCategoryErrors] = useState("");
+  const onClose = () => {
+    navigation.goBack();
+  };
 
-  // const [formData, setFormData] = useState(journalEntry);
   const [datePicker, setDatePicker] = useState(false);
-  const [modalVisible, setModalVisible] = useState(isVisible);
+  const [modalVisible, setModalVisible] = useState(true);
   const [customCategory, setCustomCategory] = useState(false);
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
@@ -99,6 +103,7 @@ function Detailsmodal({ isVisible, onClose, journalEntry }) {
       formData.category.length > 0 &&
       formData.content.length > 0
     ) {
+      console.log("edit data", formData);
       handleCreation();
     }
   };
@@ -106,6 +111,10 @@ function Detailsmodal({ isVisible, onClose, journalEntry }) {
   const handleCreation = async () => {
     try {
       const token = await AsyncStorage.getItem("Token");
+      console.log("token", token);
+      const updatEndpoint = apiUrl + `/journals/journal_detail/${formData.id}/`;
+      console.log("updatEndpoint", updatEndpoint);
+
       const config = {
         headers: {
           "Content-Type": "application/json",
@@ -114,61 +123,44 @@ function Detailsmodal({ isVisible, onClose, journalEntry }) {
       };
 
       // format time
-      const datedd = formData.date;
-      const det = datedd.toISOString().split("T");
-      // console.log(det[0]);
+      if (formData.date.length > 11) {
+        const datedd = formData.date;
+        const det = datedd.toISOString().split("T");
+        console.log("not");
+
+        console.log(det[0]);
+        setFormData({ ...formData, date: det[0] });
+        return;
+      }
 
       const formdata = {
+        id: formData.id,
         category: formData.category,
         content: formData.content,
-        date: det[0],
+        date: formData.date,
         title: formData.title,
-        user: formData.user,
       };
-      const response = await axios.post(
-        apiUrl + "/journals/journal_list/",
-        formdata,
-        config
-      );
-      console.log(response.data);
+
+      console.log("formdata", formdata);
+
+      // /journals/journal_detail/b79930f4-c0bf-4d95-a9bd-4c87846bc60a/
+
+      const response = await axios.put(updatEndpoint, formdata, config);
+      // console.log("update response", response.data);
 
       if (response.data !== false) {
         // display toast success
         console.log("succeeded");
-        notificationToast("success", "Journal added successful", "");
+        Toastnotify("success", "Journal updated successful", "");
         navigation.navigate("Home");
       }
     } catch (error) {
-      console.error(error);
+      console.error(error.response.data);
       // display failure toast
-      notificationToast("error", "Failed adding journal", "Try again");
+      Toastnotify("error", "Failed updating journal", "Try again");
     }
   };
 
-  const notificationToast = (
-    type: string,
-    titletext: string,
-    titletext2: string
-  ) => {
-    Toast.show({
-      type: type, //"error",
-      position: "top",
-      text1: titletext, //"Failed",
-      text2: titletext2, //"Check credentials & Try again",
-      text1Style: {
-        fontSize: hp("2%"),
-        fontWeight: "bold",
-        lineHeight: hp("3%"),
-      },
-      text2Style: {
-        fontSize: hp("1.4%"),
-        fontWeight: "bold",
-        lineHeight: hp("3%"),
-      },
-      topOffset: hp("12%"),
-      visibilityTime: 4000,
-    });
-  };
   return (
     <SafeAreaView>
       <Modal
@@ -190,7 +182,7 @@ function Detailsmodal({ isVisible, onClose, journalEntry }) {
             ) : null}
             <TextInput
               className="border border-gray-300 rounded p-2 mb-2 w-full"
-              placeholder="Title"
+              placeholder={item.title}
               value={formData.title}
               onChangeText={(text) => handleInputChange("title", text)}
             />
@@ -201,7 +193,7 @@ function Detailsmodal({ isVisible, onClose, journalEntry }) {
             ) : null}
             <TextInput
               className="border border-gray-300 rounded p-2 mb-2 w-full"
-              placeholder="Content"
+              placeholder={item.content}
               value={formData.content}
               onChangeText={(text) => handleInputChange("content", text)}
               multiline
@@ -228,7 +220,7 @@ function Detailsmodal({ isVisible, onClose, journalEntry }) {
               <View className="border border-gray-300 rounded p-2 mb-2 w-full flex">
                 <TextInput
                   className="border border-gray-300 rounded p-2 mb-2 w-full"
-                  placeholder="Enter custom category"
+                  placeholder={item.category}
                   value={formData.category}
                   onChangeText={(text) => handleInputChange("category", text)}
                 />
@@ -280,7 +272,7 @@ function Detailsmodal({ isVisible, onClose, journalEntry }) {
   );
 }
 
-export default Detailsmodal;
+export default Editmodal;
 
 const styles = StyleSheet.create({
   modalContainer: {

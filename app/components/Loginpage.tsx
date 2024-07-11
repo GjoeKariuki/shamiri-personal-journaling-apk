@@ -10,7 +10,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import Toast from "react-native-toast-message";
+import Toastnotify from "./Toastnotify";
 
 interface formInputs {
   email: string;
@@ -33,7 +33,7 @@ export default function LoginScreen() {
         headers: { "Content-Type": "application/json" },
       });
       if (response.data !== false) {
-        notificationToast("success", "Login successful", "");
+        Toastnotify("success", "Login successful", "");
         const user_id = response.data.user.id;
         const user_token = response.data.token;
         const user_first_name = response.data.user.first_name;
@@ -56,11 +56,7 @@ export default function LoginScreen() {
     } catch (error: any) {
       console.error("error response", error);
       // show toast failed
-      notificationToast(
-        "error",
-        "Login failed",
-        "Check credentials & trying again"
-      );
+      Toastnotify("error", "Login failed", "Check credentials & trying again");
 
       const errormessage = error.response.data.error[0];
       console.log(errormessage);
@@ -88,34 +84,11 @@ export default function LoginScreen() {
         password: password.trim(),
       };
       console.log("foremd", formdata);
+
       postLogin(formdata);
     }
   };
 
-  const notificationToast = (
-    type: string,
-    titletext: string,
-    titletext2: string
-  ) => {
-    Toast.show({
-      type: type, //"error",
-      position: "top",
-      text1: titletext, //"Failed",
-      text2: titletext2, //"Check credentials & Try again",
-      text1Style: {
-        fontSize: hp("2%"),
-        fontWeight: "bold",
-        lineHeight: hp("3%"),
-      },
-      text2Style: {
-        fontSize: hp("1.4%"),
-        fontWeight: "bold",
-        lineHeight: hp("3%"),
-      },
-      topOffset: hp("12%"),
-      visibilityTime: 4000,
-    });
-  };
   return (
     <View className="flex-1 bg-white" style={{ backgroundColor: "#877dfa" }}>
       <SafeAreaView className="flex p-2 pt-6">
