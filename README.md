@@ -28,6 +28,12 @@ This is a mobile application built using React Native Expo that allows users to 
 
 ## Installation
 
+0. Create project folder:
+   ```bash
+   cd <project directory>
+   mkdir KGGeorge
+   cd KGGeorge
+   ```
 1. Clone the repository:
    ```bash
    git clone https://github.com/GjoeKariuki/shamiri-personal-journaling-apk.git
