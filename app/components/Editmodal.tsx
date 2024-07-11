@@ -37,7 +37,7 @@ function Editmodal() {
     title: item.title,
     content: item.content,
     category: item.category,
-    date: item.date, // Initialize with current date
+    date: new Date(), // Initialize with current date
     user: item.user,
   });
   const [titleErrors, setTitleErrors] = useState("");
@@ -123,29 +123,20 @@ function Editmodal() {
       };
 
       // format time
-      if (formData.date.length > 11) {
-        const datedd = formData.date;
-        const det = datedd.toISOString().split("T");
-        console.log("not");
+      // /journals/journal_detail/b79930f4-c0bf-4d95-a9bd-4c87846bc60a/
 
-        console.log(det[0]);
-        setFormData({ ...formData, date: det[0] });
-        return;
-      }
-
+      const datedd = formData.date;
+      const det = datedd.toISOString().split("T");
       const formdata = {
         id: formData.id,
         category: formData.category,
         content: formData.content,
-        date: formData.date,
+        date: det[0],
         title: formData.title,
       };
-
-      console.log("formdata", formdata);
-
-      // /journals/journal_detail/b79930f4-c0bf-4d95-a9bd-4c87846bc60a/
-
       const response = await axios.put(updatEndpoint, formdata, config);
+      console.log("response", response);
+
       // console.log("update response", response.data);
 
       if (response.data !== false) {
