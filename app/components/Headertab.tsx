@@ -16,8 +16,9 @@ import {
   removeOrientationListener as rol,
 } from "react-native-responsive-screen";
 import Icon from "react-native-vector-icons/FontAwesome5";
+import Iconlg from "react-native-vector-icons/AntDesign";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import Toastnotify from "./Toastnotify";
 import HeaderLogo from "../../assets/headerlogo.png";
 
 function Headertab() {
@@ -43,6 +44,16 @@ function Headertab() {
       searchToken();
     }, 200);
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.clear();
+      navigation.navigate("Login");
+      Toastnotify("success", "loged out", "");
+    } catch (error) {
+      Toastnotify("error", "logout failed", "");
+    }
+  };
   return (
     <SafeAreaView className="bg-orange-20" style={styles.headers}>
       <View className="flex flex-row justify-between px-5">
@@ -51,16 +62,33 @@ function Headertab() {
           resizeMode="contain"
           style={styles.imagelogo}
         />
-        {hasToken && (
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              navigation.navigate("Profile");
-            }}
-          >
-            <Icon name="user-edit" size={30} color="blue" />
-          </TouchableOpacity>
-        )}
+        <View className="flex">
+          {hasToken && (
+            <TouchableOpacity
+              className="mx-1 m-2"
+              style={styles.button}
+              onPress={() => {
+                navigation.navigate("Profile");
+              }}
+            >
+              <Icon name="user-edit" size={30} color="blue" />
+            </TouchableOpacity>
+          )}
+        </View>
+        <View>
+          {hasToken && (
+            <TouchableOpacity
+              className="mx-10 m-2"
+              style={styles.button}
+              onPress={() => {
+                // logout
+                handleLogout();
+              }}
+            >
+              <Iconlg name="logout" size={30} color="blue" />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     </SafeAreaView>
   );

@@ -230,15 +230,15 @@ function Addsmodal({ isVisible, onClose, journalEntry }) {
                 onChange={changeDate}
               />
             )}
-            <View className="flex-row justify-between">
+            <View className="flex-row justify-around">
               <TouchableOpacity
-                className="bg-blue-500 p-3 rounded-lg"
+                className="bg-blue-500 m-4 p-3 rounded-lg"
                 onPress={onClose}
               >
                 <Text className="text-white text-center">Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="bg-green-500 p-3 rounded-lg"
+                className="bg-green-500 m-4 p-3 rounded-lg"
                 onPress={() => {
                   // Save logic here
                   // onClose();
