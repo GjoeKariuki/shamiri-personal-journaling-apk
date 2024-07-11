@@ -25,6 +25,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { sampleJournal } from "../store/store";
+import Toastnotify from "./Toastnotify";
 
 function Homepage() {
   const navigation = useNavigation();
@@ -84,6 +85,30 @@ function Homepage() {
     setFilter(period);
     // fetch diaries from endpoint
     // setDiary(response.data)
+  };
+
+  const handleDelete = async (item: any) => {
+    try {
+      console.log(item);
+      const token = await AsyncStorage.getItem("Token");
+      const deleteEndpoint = apiUrl + `/journals/journal_detail/${item.id}/`;
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+      };
+      // // /journals/journal_detail/b79930f4-c0bf-4d95-a9bd-4c87846bc60a/
+      const response = await axios.delete(deleteEndpoint, config);
+      console.log(response.data);
+      if (response.data !== false) {
+        Toastnotify("success", "journal deleted succeessful", "");
+      }
+    } catch (error) {
+      console.error("delete error", error.response.data);
+      Toastnotify("error", "Delete failed", "journal failed to be deleted");
+    }
   };
 
   useEffect(() => {
@@ -166,6 +191,7 @@ function Homepage() {
                   className="p-2 rounded-full bg-red-100"
                   onPress={() => {
                     /* delete logic */
+                    handleDelete(item);
                   }}
                 >
                   <Icon name="trash" size={30} color="#ff6666" />
